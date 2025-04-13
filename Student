@@ -1,0 +1,69 @@
+public class Gradebook {
+
+    public static void main(String[] args) {
+        try {
+            // Open input and output files
+            File inputFile = new File("students.txt"); // or students.csv
+            Scanner scanner = new Scanner(inputFile);
+            PrintWriter writer = new PrintWriter("grades_output.txt");
+
+            // Write output header
+            writer.println("student_id,name,total,average,letter_grade");
+
+            // Skip header line
+            if (scanner.hasNextLine()) {
+                scanner.nextLine();
+            }
+
+            // Read and process each student record
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                String[] fields = line.split(",");
+
+                if (fields.length != 7) {
+                    System.out.println("Skipping malformed line: " + line);
+                    continue;
+                }
+
+                String studentId = fields[0];
+                String name = fields[1];
+                int b1 = Integer.parseInt(fields[2]);
+                int b2 = Integer.parseInt(fields[3]);
+                int b3 = Integer.parseInt(fields[4]);
+                int midterm = Integer.parseInt(fields[5]);
+                int finalExam = Integer.parseInt(fields[6]);
+
+                int total = calculateTotal(b1, b2, b3, midterm, finalExam);
+                double average = total / 5.0;
+                String letterGrade = getLetterGrade(average);
+
+                writer.printf("%s,%s,%d,%.2f,%s\n", studentId, name, total, average, letterGrade);
+            }
+
+            // Close files
+            scanner.close();
+            writer.close();
+
+            System.out.println("Gradebook processing complete. Output saved to grades_output.txt");
+
+        } catch (FileNotFoundException e) {
+            System.out.println("Error: Input file not found.");
+        } catch (Exception e) {
+            System.out.println("Unexpected error: " + e.getMessage());
+        }
+    }
+
+    public static int calculateTotal(int b1, int b2, int b3, int midterm, int finalExam) {
+        return b1 + b2 + b3 + midterm + finalExam;
+    }
+
+    public static String getLetterGrade(double average) {
+        if (average >= 90) return "A";
+        else if (average >= 80) return "B";
+        else if (average >= 70) return "C";
+        else if (average >= 60) return "D";
+        else return "F";
+    } 
+}
+
+}
